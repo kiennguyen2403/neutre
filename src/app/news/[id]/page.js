@@ -73,11 +73,9 @@ const News = ({ params }) => {
                 {newsContent.body}
               </Typography>
               <div style={{ marginTop: '16px' }}>
-                <Link href={newsContent.url} passHref>
-                  <Button component="a" variant="contained" color="primary" target="_blank" rel="noopener noreferrer">
+                  <Button href={newsContent.url} component="a" variant="contained" color="primary" target="_blank" rel="noopener noreferrer">
                     Read Full Article
                   </Button>
-                </Link>
               </div>
             </Paper>
           ))}
