@@ -3,6 +3,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import ThemeProviderWrapper from '@/theme/theme-provider-wrapper';
 import { ClerkProvider } from '@clerk/nextjs'
 import { dark } from "@clerk/themes";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
