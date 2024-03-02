@@ -13,6 +13,8 @@ import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import Post from "../components/Post";
 import PreferenceChooser from "../components/PreferenceChooser";
 import { useUser, auth, clerkClient } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 
 const TOPICS = [
@@ -81,11 +83,13 @@ const trendingPosts = [
 ]
 
 export default function Home() {
-  const [topics, setTopics] = useState(TOPICS);
+  // const [topics, setTopics] = useState(TOPICS);
   const [selectedTopics, setSelectedTopics] = useState(TOPICS.map((topic) => topic.title) || []);
-  const [posts, setPosts] = useState(POSTS);
+  // const [posts, setPosts] = useState(POSTS);
   const [preferences, setPreferences] = useState(null);
   const { isLoaded, isSignedIn, user } = useUser();
+  const posts = useQuery(api.news.get);
+  const topics = useQuery(api.topics.get);
 
   useEffect(() => {
     if (user?.publicMetadata?.preferences) {

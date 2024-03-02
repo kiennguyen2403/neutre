@@ -1,7 +1,10 @@
+"use client";
 import React from 'react';
 import { Container, Grid, Paper, Typography, List, ListItem, ListItemText, Divider, Button } from '@mui/material';
 import Link from 'next/link';
 import AppRouter from 'next/dist/client/components/app-router';
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 // Mock data
 const newsContents = [
   {
@@ -40,6 +43,8 @@ const trendingTopics = [
 
 
 const News = ({ params }) => {
+  const news = useQuery(api.news.getById, { id: params.id });
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 , margin: '90px'}}>
       <Grid container spacing={3}>
