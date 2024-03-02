@@ -10,8 +10,10 @@ import {
   Icon,
 } from "@mui/material";
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
-import Post from "./components/Post";
-import PreferenceChooser from "./components/PreferenceChooser";
+import Post from "../components/Post";
+import PreferenceChooser from "../components/PreferenceChooser";
+import { useUser, auth, clerkClient } from "@clerk/nextjs";
+
 
 const TOPICS = [
   {
@@ -83,20 +85,40 @@ export default function Home() {
   const [selectedTopics, setSelectedTopics] = useState(TOPICS.map((topic) => topic.title) || []);
   const [posts, setPosts] = useState(POSTS);
   const [preferences, setPreferences] = useState(null);
+  const { isLoaded, isSignedIn, user } = useUser();
 
   useEffect(() => {
-    const preferences = JSON.parse(localStorage.getItem("preferences"));
-    if (preferences) {
-      setPreferences(preferences);
-      setSelectedTopics(preferences);
+    if (user?.publicMetadata?.preferences) {
+      setPreferences(user.publicMetadata.preferences);
+      setSelectedTopics(user.publicMetadata.preferences);
     }
-  })
+  }, [user])
 
-  const savePreferences = (topics) => {
-    localStorage.setItem("preferences", JSON.stringify(topics));
-    setPreferences(topics);
-    setSelectedTopics(topics);
+  const postSelectedTopics = async (topics) => {
+    try {
+      const response = await fetch('/api/preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ topics }),
+      });
+    } catch (error) {
+      console.error('Failed to update preferences', error);
+    }
   }
+
+  const savePreferences = async (topics) => {
+    try {
+      await postSelectedTopics(topics);
+      setPreferences(topics);
+      setSelectedTopics(topics);
+    } catch (error) {
+      console.error('Failed to update preferences', error);
+    }
+  }
+
+  if (!isLoaded) return null;
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "4rem", paddingBlock: "2rem", minHeight: "100vh" }}>
@@ -112,6 +134,7 @@ export default function Home() {
                     variant={"filled"}
                     onClick={() => {
                       setSelectedTopics((prev) => prev.filter((t) => t !== topic));
+                      postSelectedTopics(selectedTopics.filter((t) => t !== topic));
                     }}
                     color="primary"
                   />
@@ -124,6 +147,7 @@ export default function Home() {
                     variant={"outlined"}
                     onClick={() => {
                       setSelectedTopics((prev) => [...prev, topic].toSorted());
+                      postSelectedTopics([...selectedTopics, topic].toSorted());
                     }}
                     color="primary"
                   />
