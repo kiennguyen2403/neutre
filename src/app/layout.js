@@ -1,10 +1,8 @@
 import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { Inter } from 'next/font/google';
-import DrawerAppBar from './components/app-bar/app-bar';
-import { Box } from '@mui/material';
-import Footer from './components/footer/footer';
-import ThemeProviderWrapper from '@/styles/theme-provider-wrapper';
+import ThemeProviderWrapper from '@/theme/theme-provider-wrapper';
+import { ClerkProvider } from '@clerk/nextjs'
+import { dark } from "@clerk/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,21 +21,21 @@ export default function RootLayout({ children }) {
       }}>
         <ThemeProviderWrapper options={{ key: 'mui-theme' }}>
           <AppRouterCacheProvider>
-            <DrawerAppBar />
-            <div style={{
-              width: '100vw',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            <ClerkProvider
+              appearance={{
+                baseTheme: dark,
+                variables: {
+                  colorPrimary: '#90caf9',
+                },
+                elements: {
+                  userButtonPopoverCard: {
+                    boxShadow: '0px 0px 10px 0px #000000',
+                  },
+                }
+              }}
+            >
               {children}
-            </div>
-            <div style={{
-              bottom: 0,
-              width: '100%',
-            }}>
-              <Footer />
-            </div>
+            </ClerkProvider>
           </AppRouterCacheProvider>
         </ThemeProviderWrapper>
       </body>
