@@ -14,7 +14,7 @@ export default defineSchema({
             })
         ),
         image: v.string(),
-        preference: v.string(),
+        preference: v.array(v.string()),
     }),
     user: defineTable({
         name: v.string(),
