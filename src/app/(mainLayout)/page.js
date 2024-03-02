@@ -8,11 +8,16 @@ import {
   Stack,
   Typography,
   Icon,
+  Skeleton,
+  CircularProgress,
 } from "@mui/material";
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import Post from "../components/Post";
 import PreferenceChooser from "../components/PreferenceChooser";
 import { useUser, auth, clerkClient } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import Link from "next/link";
 
 
 const TOPICS = [
@@ -82,10 +87,12 @@ const trendingPosts = [
 
 export default function Home() {
   const [topics, setTopics] = useState(TOPICS);
-  const [selectedTopics, setSelectedTopics] = useState(TOPICS.map((topic) => topic.title) || []);
-  const [posts, setPosts] = useState(POSTS);
+  const [selectedTopics, setSelectedTopics] = useState([]);
+  // const [posts, setPosts] = useState(POSTS);
   const [preferences, setPreferences] = useState(null);
   const { isLoaded, isSignedIn, user } = useUser();
+  const posts = useQuery(api.news.get, { preference: selectedTopics?.[0]?.toLowerCase() ?? '' });
+  const trendingPosts = useQuery(api.topics.get);
 
   useEffect(() => {
     if (user?.publicMetadata?.preferences) {
@@ -118,13 +125,13 @@ export default function Home() {
     }
   }
 
-  if (!isLoaded) return null;
+  if (!isLoaded || !isSignedIn) return null;
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "4rem", paddingBlock: "2rem", minHeight: "100vh" }}>
-      {!preferences ? <PreferenceChooser topics={topics} onSave={savePreferences} /> :
+      {!user?.publicMetadata?.preferences ? <PreferenceChooser topics={topics} onSave={savePreferences} /> :
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={3} position="sticky" top="2rem">
             <Card>
               <Stack direction="row" gap={1} flexWrap="wrap" padding="1rem">
                 {selectedTopics.map((topic) => (
@@ -157,14 +164,22 @@ export default function Home() {
           </Grid>
           <Grid item xs={6}>
             <Stack gap={3}>
-              {posts.map((post, index) => (
-                <Post key={index} {...post} />
-              ))}
+              {posts ? posts.map((post, index) => (
+                <Link key={`post-${index}`} href={`/news/${post._id}`}>
+                  <Post {...post} />
+                </Link>
+              )) :
+                Array.from({ length: 3 }).map((index) => (
+                  <Skeleton key={index} variant="rounded" height={400} />
+                ))
+              }
             </Stack>
           </Grid>
           <Grid item xs={3}>
             <Card>
-              <Stack gap={1} padding={2}>
+              <Stack gap={1} padding={2} sx={{
+                      textOverflow: 'ellipsis',
+                    }}>
                 <Stack direction="row" alignItems="center" gap={1}>
                   <Icon>
                     <TrendingUpRoundedIcon />
@@ -173,11 +188,21 @@ export default function Home() {
                     Trending
                   </Typography>
                 </Stack>
-                {trendingPosts.map((post, index) => (
-                  <Typography key={index} variant="h6" color="text.secondary">
-                    {`${index + 1}. ${post.title}`}
-                  </Typography>
-                ))}
+                {trendingPosts ? trendingPosts?.map((post, index) => (
+                  <Link href={`/news/${post._id}`} key={`trending-post-${index}`}>
+                    <Typography key={index} variant="h6" color="text.secondary" sx={{
+                      "&:hover": {
+                        textDecoration: 'underline',
+                      },
+                    }}>
+                      {`${index + 1}. ${post.title}`}
+                    </Typography>
+                  </Link>
+                )) :
+                <Stack justifyContent="center" alignItems="center" paddingBlock="2rem">
+                  <CircularProgress />
+                </Stack>
+                }
               </Stack>
             </Card>
           </Grid>

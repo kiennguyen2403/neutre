@@ -1,7 +1,10 @@
+"use client";
 import React from 'react';
-import { Container, Grid, Paper, Typography, List, ListItem, ListItemText, Divider, Button } from '@mui/material';
+import { Stack, Container, Grid, Paper, Typography, List, ListItem, ListItemText, Divider, Button, Skeleton, useTheme } from '@mui/material';
 import Link from 'next/link';
 import AppRouter from 'next/dist/client/components/app-router';
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 // Mock data
 const newsContents = [
   {
@@ -22,7 +25,6 @@ const newsContents = [
   // Add more posts as needed
 ];
 
-
 const comments = [
   { user: 'User1', text: 'Great article!' },
   { user: 'User2', text: 'Interesting point of view.' },
@@ -31,31 +33,33 @@ const comments = [
 ];
 
 const trendingTopics = [
-  { name: "Topic 1", retweets: 120, likes: 250, replies: 30 },
-  { name: "Topic 2", retweets: 90, likes: 200, replies: 25 },
-  { name: "Topic 3", retweets: 75, likes: 150, replies: 20 },
+  { name: "Paris Fashion Week 2024", retweets: 120, likes: 250, replies: 30 },
+  { name: "DunkleyVote", retweets: 90, likes: 200, replies: 25 },
+  { name: "YeonJun", retweets: 75, likes: 150, replies: 20 },
   // Add more topics as needed
 ];
 
-
-
 const News = ({ params }) => {
+  const news = useQuery(api.news.getById, { id: params.id ?? '' });
+  const [selectedPost, setSelectedPost] = React.useState(null);
+  const theme = useTheme();
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 , margin: '90px'}}>
       <Grid container spacing={3}>
         {/* Comments section (left column) */}
         <Grid item xs={12} md={3}>
-          <Paper elevation={3} sx={{ maxHeight: '80vh', overflow: 'auto' }}>
+          <Paper elevation={3} sx={{ overflow: 'auto' }}>
             <Typography variant="h6" component="div" sx={{ p: 2 }}>
               Top Comment Trends
             </Typography>
             <List>
-              {comments.slice(0, 3).map((comment, index) => (
-                <React.Fragment key={index}>
+              {news?.sources?.[selectedPost]?.comment?.slice(0, 3).map((comment, index, comments) => (
+                <React.Fragment key={`comment-${index}`}>
                   <ListItem>
-                    <ListItemText primary={comment.text} />
+                    <ListItemText primary={comment} />
                   </ListItem>
-                  {index < 2 && <Divider component="li" />}  
+                  {index < 2 && index !== comments.length - 1 && <Divider component="li" />}  
                 </React.Fragment>
               ))}
             </List>
@@ -64,13 +68,30 @@ const News = ({ params }) => {
 
        {/* News content section (middle column) */}
        <Grid item xs={12} md={6}>
-          {newsContents.map((newsContent, index) => (
-            <Paper key={index} elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
+          {news ? news.sources?.map((newsContent, index) => (
+            <Paper
+              key={`post-${index}`}
+              elevation={3}
+              sx={{
+                padding: 2,
+                marginBottom: 2,
+                outline: selectedPost === index ? '2px solid' : 'none',
+                outlineColor: theme.palette.primary.main,
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                if (selectedPost === index) {
+                  setSelectedPost(null);
+                  return;
+                }
+                setSelectedPost(index)
+              }}
+            >
               <Typography variant="h4" component="h1" gutterBottom>
                 {newsContent.title}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {newsContent.body}
+                {newsContent.description}
               </Typography>
               <div style={{ marginTop: '16px' }}>
                   <Button href={newsContent.url} component="a" variant="contained" color="primary" target="_blank" rel="noopener noreferrer">
@@ -78,14 +99,22 @@ const News = ({ params }) => {
                   </Button>
               </div>
             </Paper>
-          ))}
+          )) :
+            <Stack gap={2}>
+            {
+              Array.from({ length: 3 }).map((index) => (
+                <Skeleton key={index} variant="rounded" height={400} />
+              ))
+            }
+            </Stack>
+          }
         </Grid>
 
 
         {/* Trending section (right column) */}
         <Grid item xs={12} md={3}>
-          <Paper elevation={3} sx={{ maxHeight: '80vh', overflow: 'auto' }}>
-            <Typography variant="h6" component="div" sx={{ p: 2 }}>
+          <Paper elevation={3} sx={{ overflow: 'auto' }}>
+            <Typography variant="h6" component="div" sx={{ p: 2, pb: 0 }}>
               Related Trending Topics on Twitter
             </Typography>
             <List>

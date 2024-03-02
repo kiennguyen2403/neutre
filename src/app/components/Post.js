@@ -1,19 +1,30 @@
 import React from 'react';
 import { Card, CardMedia, CardContent, Typography, CardHeader } from '@mui/material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
-const Post = ({ imageUrl, title, date, comments }) => {
+const Post = ({ imageUrl, title, _creationTime: date, contents }) => {
   return (
-    <Card>
+    <Card sx={{
+      cursor: "pointer",
+      "&:hover": {
+        boxShadow: "0px 0px 10px 0px #000000",
+      },
+    }}>
       <CardHeader title={title} subheader={new Date(date).toDateString()} />
       <CardMedia
         component="img"
         height="200"
-        image={imageUrl}
+        image={imageUrl || "https://picsum.photos/600/200"}
         alt="Post Image"
       />
       <CardContent>
-        {comments.map((comment, index) => (
+        {contents?.map((comment, index) => (
           <Typography key={index} variant="h6" color="text.secondary">
+            <FiberManualRecordIcon sx={{
+              width: "0.5em",
+              height: "0.5em",
+              marginRight: "0.5em",
+            }}/>
             {comment}
           </Typography>
         ))}
