@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Chip,
@@ -11,13 +11,29 @@ import {
 } from "@mui/material";
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import Post from "./components/Post";
+import PreferenceChooser from "./components/PreferenceChooser";
 
 const TOPICS = [
-  "Sport",
-  "Technology",
-  "Life",
-  "Politics",
-  "News"
+  {
+    title: "Sport",
+    imageUrl: "https://picsum.photos/200?random=1",
+  },
+  {
+    title: "Technology",
+    imageUrl: "https://picsum.photos/200?random=2",
+  },
+  {
+    title: "Life",
+    imageUrl: "https://picsum.photos/200?random=3",
+  },
+  {
+    title: "Politics",
+    imageUrl: "https://picsum.photos/200?random=4",
+  },
+  {
+    title: "News",
+    imageUrl: "https://picsum.photos/200?random=5",
+  },
 ]
 
 const POSTS = [
@@ -63,68 +79,86 @@ const trendingPosts = [
 ]
 
 export default function Home() {
-  const [selectedTopics, setSelectedTopics] = useState(TOPICS);
+  const [topics, setTopics] = useState(TOPICS);
+  const [selectedTopics, setSelectedTopics] = useState(TOPICS.map((topic) => topic.title) || []);
   const [posts, setPosts] = useState(POSTS);
+  const [preferences, setPreferences] = useState(null);
+
+  useEffect(() => {
+    const preferences = JSON.parse(localStorage.getItem("preferences"));
+    if (preferences) {
+      setPreferences(preferences);
+      setSelectedTopics(preferences);
+    }
+  })
+
+  const savePreferences = (topics) => {
+    localStorage.setItem("preferences", JSON.stringify(topics));
+    setPreferences(topics);
+    setSelectedTopics(topics);
+  }
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: "4rem", paddingBlock: "2rem" }}>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Card>
-            <Stack direction="row" gap={1} flexWrap="wrap" padding="1rem">
-              {selectedTopics.map((topic) => (
-                <Chip
-                  key={topic}
-                  label={topic}
-                  variant={"filled"}
-                  onClick={() => {
-                    setSelectedTopics((prev) => prev.filter((t) => t !== topic));
-                  }}
-                  color="primary"
-                />
-              ))}
+    <Container maxWidth="lg" sx={{ marginTop: "4rem", paddingBlock: "2rem", minHeight: "100vh" }}>
+      {!preferences ? <PreferenceChooser topics={topics} onSave={savePreferences} /> :
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <Card>
+              <Stack direction="row" gap={1} flexWrap="wrap" padding="1rem">
+                {selectedTopics.map((topic) => (
+                  <Chip
+                    key={topic}
+                    label={topic}
+                    variant={"filled"}
+                    onClick={() => {
+                      setSelectedTopics((prev) => prev.filter((t) => t !== topic));
+                    }}
+                    color="primary"
+                  />
+                ))}
 
-              {TOPICS.filter((topic) => !selectedTopics.includes(topic)).map((topic) => (
-                <Chip
-                  key={topic}
-                  label={topic}
-                  variant={"outlined"}
-                  onClick={() => {
-                    setSelectedTopics((prev) => [...prev, topic].toSorted());
-                  }}
-                  color="primary"
-                />
-              ))}
-            </Stack>
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Stack gap={3}>
-            {posts.map((post, index) => (
-              <Post key={index} {...post} />
-            ))}
-          </Stack>
-        </Grid>
-        <Grid item xs={3}>
-          <Card>
-            <Stack gap={1} padding={2}>
-              <Stack direction="row" alignItems="center" gap={1}>
-                <Icon>
-                  <TrendingUpRoundedIcon />
-                </Icon>
-                <Typography variant="h5" color="text.primary">
-                  Trending
-                </Typography>
+                {TOPICS.map((topic) => topic.title).filter((topic) => !selectedTopics.includes(topic)).map((topic) => (
+                  <Chip
+                    key={topic}
+                    label={topic}
+                    variant={"outlined"}
+                    onClick={() => {
+                      setSelectedTopics((prev) => [...prev, topic].toSorted());
+                    }}
+                    color="primary"
+                  />
+                ))}
               </Stack>
-              {trendingPosts.map((post, index) => (
-                <Typography key={index} variant="h6" color="text.secondary">
-                  {`${index + 1}. ${post.title}`}
-                </Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={6}>
+            <Stack gap={3}>
+              {posts.map((post, index) => (
+                <Post key={index} {...post} />
               ))}
             </Stack>
-          </Card>
+          </Grid>
+          <Grid item xs={3}>
+            <Card>
+              <Stack gap={1} padding={2}>
+                <Stack direction="row" alignItems="center" gap={1}>
+                  <Icon>
+                    <TrendingUpRoundedIcon />
+                  </Icon>
+                  <Typography variant="h5" color="text.primary">
+                    Trending
+                  </Typography>
+                </Stack>
+                {trendingPosts.map((post, index) => (
+                  <Typography key={index} variant="h6" color="text.secondary">
+                    {`${index + 1}. ${post.title}`}
+                  </Typography>
+                ))}
+              </Stack>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      }
     </Container>
   );
 }
