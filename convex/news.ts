@@ -26,7 +26,7 @@ export const getById = query({
             return await ctx.db
                 .query("news")
                 .filter((q) => q.eq(q.field('_id'), id))
-                .collect();
+                .first();
         } catch (e) {
             console.log(e);
             return "failure";
