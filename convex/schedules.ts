@@ -50,9 +50,10 @@ export const updateNews = action({
                 .runAfter(1000 * 60 * 60 * 24, internal.news.insert, {
                     title: news.data.title,
                     contents: news.data.contents,
+                    sources: news.data.sources,
                     authors: news.data.authors,
                     image: imageUrl,
-                    url: news.data.url,
+                    preference: news.data.preference,
                 });
         } catch (e) {
             console.log(e);
