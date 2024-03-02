@@ -1,95 +1,130 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useState } from "react";
+import {
+  Card,
+  Chip,
+  Grid,
+  Container,
+  Stack,
+  Typography,
+  Icon,
+} from "@mui/material";
+import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
+import Post from "./components/Post";
+
+const TOPICS = [
+  "Sport",
+  "Technology",
+  "Life",
+  "Politics",
+  "News"
+]
+
+const POSTS = [
+  {
+    title: "Post 1",
+    imageUrl: "https://picsum.photos/600/200?random=1",
+    date: new Date(),
+    comments: ["Comment 1", "Comment 2"],
+  },
+  {
+    title: "Post 2",
+    imageUrl: "https://picsum.photos/600/200?random=2",
+    date: new Date(),
+    comments: ["Comment 1", "Comment 2"],
+  },
+  {
+    title: "Post 3",
+    imageUrl: "https://picsum.photos/600/200?random=3",
+    date: new Date(),
+    comments: ["Comment 1", "Comment 2"],
+  },
+]
+
+const trendingPosts = [
+  {
+    title: "Trending Post 1",
+    imageUrl: "https://picsum.photos/600/200?random=4",
+    date: new Date(),
+    comments: ["Comment 1", "Comment 2"],
+  },
+  {
+    title: "Trending Post 2",
+    imageUrl: "https://picsum.photos/600/200?random=5",
+    date: new Date(),
+    comments: ["Comment 1", "Comment 2"],
+  },
+  {
+    title: "Trending Post 3",
+    imageUrl: "https://picsum.photos/600/200?random=6",
+    date: new Date(),
+    comments: ["Comment 1", "Comment 2"],
+  },
+]
 
 export default function Home() {
+  const [selectedTopics, setSelectedTopics] = useState(TOPICS);
+  const [posts, setPosts] = useState(POSTS);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Container maxWidth="lg" sx={{ marginTop: "4rem", paddingBlock: "2rem" }}>
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <Card>
+            <Stack direction="row" gap={1} flexWrap="wrap" padding="1rem">
+              {selectedTopics.map((topic) => (
+                <Chip
+                  key={topic}
+                  label={topic}
+                  variant={"filled"}
+                  onClick={() => {
+                    setSelectedTopics((prev) => prev.filter((t) => t !== topic));
+                  }}
+                  color="primary"
+                />
+              ))}
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+              {TOPICS.filter((topic) => !selectedTopics.includes(topic)).map((topic) => (
+                <Chip
+                  key={topic}
+                  label={topic}
+                  variant={"outlined"}
+                  onClick={() => {
+                    setSelectedTopics((prev) => [...prev, topic].toSorted());
+                  }}
+                  color="primary"
+                />
+              ))}
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid item xs={6}>
+          <Stack gap={3}>
+            {posts.map((post, index) => (
+              <Post key={index} {...post} />
+            ))}
+          </Stack>
+        </Grid>
+        <Grid item xs={3}>
+          <Card>
+            <Stack gap={1} padding={2}>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <Icon>
+                  <TrendingUpRoundedIcon />
+                </Icon>
+                <Typography variant="h5" color="text.primary">
+                  Trending
+                </Typography>
+              </Stack>
+              {trendingPosts.map((post, index) => (
+                <Typography key={index} variant="h6" color="text.secondary">
+                  {`${index + 1}. ${post.title}`}
+                </Typography>
+              ))}
+            </Stack>
+          </Card>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
