@@ -28,8 +28,14 @@ const theme = createTheme({
                     backgroundColor: 'transparent'
                 },
             }
-        }
-
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: "10px"
+                }
+            }
+        },
     },
 
 });
