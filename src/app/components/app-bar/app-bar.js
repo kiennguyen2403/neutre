@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation"
 import { UserButton } from "@clerk/nextjs";
 
 const drawerWidth = 240;
-const navItems = ["Home", "Project", "About", "Blog",];
+const navItems = [];
 
 function DrawerAppBar(props) {
     const router = useRouter()
@@ -37,16 +37,24 @@ function DrawerAppBar(props) {
     };
 
     const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-            <Divider />
-            <List>
-                {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
-                        <Link href={`/${item.toLowerCase()}`} />
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
+        <>
+
+            <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+                <Typography variant="h6">
+                    <Link href="/">
+                        Neutre
+                    </Link>
+                </Typography>
+                <Divider />
+                <List>
+                    {navItems.map((item) => (
+                        <ListItem key={item} disablePadding>
+                            <Link href={`/${item.toLowerCase()}`} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Box>
+        </>
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
@@ -65,7 +73,12 @@ function DrawerAppBar(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                    <Box sx={{ display: { xs: "none", sm: "flex" } }} width="100%" marginRight="1rem">
+                        <Typography variant="h6" component="span" marginRight="auto">
+                            <Link href="/">
+                                Neutre
+                            </Link>
+                        </Typography>
                         {navItems.map((item) => (
                             <Button
                                 key={item}

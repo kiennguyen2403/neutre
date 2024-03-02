@@ -36,6 +36,13 @@ const theme = createTheme({
                 }
             }
         },
+        MuiSkeleton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: "10px"
+                }
+            }
+        },
     },
 
 });
