@@ -8,10 +8,10 @@ export const get = query({
     handler: async (ctx, { preference }) => {
         try {
             return await ctx.db
-            .query("news")
-            .filter((q) => q.eq(q.field('preference'), preference))
-            .order("asc")
-            .collect();
+                .query("news")
+                // .filter((q) => q.(q.field('preference'), preference))
+                .order("asc")
+                .collect();
         } catch (e) {
             console.log(e);
             return "failure";
@@ -39,14 +39,26 @@ export const insert = internalMutation({
         title: v.string(),
         contents: v.array(v.string()),
         authors: v.array(v.string()),
+        sources: v.array(
+            v.object({
+                contentIndex: v.number(),
+                authors: v.string(),
+                comment: v.string(),
+                url: v.string(),
+            })
+        ),
         image: v.string(),
-        url: v.array(v.string()),
-        preference: v.string(),
+        preference: v.array(v.string()),
     },
-    handler: async (ctx, { title, contents, authors, image, url, preference }) => {
+    handler: async (ctx, {
+        title,
+        contents,
+        sources,
+        image,
+        preference }) => {
         try {
             return await ctx.db
-                .insert("news", { title, contents, authors, image, url, preference })
+                .insert("news", { title, contents, sources, image, preference })
         } catch (e) {
             console.log(e);
             return "failure";

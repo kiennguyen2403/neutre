@@ -5,7 +5,7 @@ export const get = query({
     args: {},
     handler: async (ctx) => {
         try {
-            return await ctx.db.query("news").collect();
+            return await ctx.db.query("topic").collect();
         } catch (e) {
             console.log(e);
             return "failure";
@@ -17,7 +17,7 @@ export const getInternal = internalQuery({
     args: {},
     handler: async (ctx) => {
         try {
-            return await ctx.db.query("news").collect();
+            return await ctx.db.query("topic").collect();
         } catch (e) {
             console.log(e);
             return "failure";
