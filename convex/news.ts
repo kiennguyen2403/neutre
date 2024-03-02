@@ -34,7 +34,7 @@ export const insert = internalMutation({
         contents: v.array(v.string()),
         authors: v.array(v.string()),
         image: v.string(),
-        url: v.string()
+        url: v.array(v.string())
     },
     handler: async (ctx, { title, contents, authors, image, url }) => {
         try {

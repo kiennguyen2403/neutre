@@ -3,7 +3,7 @@ import { v } from "convex/values";
 import OpenAI from "openai";
 
 export const clustering = internalAction({
-    args: { title: v.string(), b: v.array(v.string()) },
+    args: { title: v.string(), content: v.array(v.string()) },
     handler: (ctx, args) => {
         try {
             const openai = new OpenAI({
@@ -14,7 +14,7 @@ export const clustering = internalAction({
                 messages: [
                     {
                         role: "user",
-                        content: "Clustering the opinions of the people on the topic of " + args.title + " and the opinions are " + args.b.join(", "),
+                        content: "Clustering the opinions of the people on the topic of " + args.title + " and the opinions are " + args.content.join(", "),
                     },
                 ],
             });

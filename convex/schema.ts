@@ -7,7 +7,7 @@ export default defineSchema({
         contents: v.array(v.string()),
         authors: v.array(v.string()),
         image: v.string(),
-        url: v.string(),
+        url: v.array(v.string()),
     }),
     user: defineTable({
         name: v.string(),
