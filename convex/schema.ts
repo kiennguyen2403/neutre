@@ -5,10 +5,16 @@ export default defineSchema({
     news: defineTable({
         title: v.string(),
         contents: v.array(v.string()),
-        authors: v.array(v.string()),
+        sources: v.array(
+            v.object({
+                authors: v.string(),
+                comment: v.string(),
+                url: v.string(),
+                contentIndex: v.number(),
+            })
+        ),
         image: v.string(),
-        preference: v.string(),
-        url: v.array(v.string()),
+        preference: v.array(v.string()),
     }),
     user: defineTable({
         name: v.string(),
