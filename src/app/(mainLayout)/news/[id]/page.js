@@ -63,25 +63,38 @@ const News = ({ params }) => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, margin: '90px' }}>
       <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h5" component="h1" gutterBottom>
+            {`Posts related to `}
+            <span style={{ color: theme.palette.primary.main }}>
+              {news?.title}
+            </span>
+          </Typography>
+        </Grid>
         {/* Comments section (left column) */}
         <Grid item xs={12} md={3}>
           <Paper elevation={3} sx={{ overflow: 'auto' }}>
-            <Typography variant="h6" component="div" sx={{ p: 2 }}>
-              Top Comment Trends
+            <Typography variant="h5" component="div" sx={{ p: 2, pb: 1 }}>
+              Comment Summarisation
             </Typography>
-            <List>
-              {news?.sources?.[selectedPost]?.comment?.slice(0, 3).map((comment, index, comments) => (
-                <React.Fragment key={`comment-${index}`}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemText primary={comment} />
-                    </ListItemButton>
-                  </ListItem>
+            { news?.sources?.[selectedPost]?.comment?.length ? 
+              <List>
+                {news?.sources?.[selectedPost]?.comment?.slice(0, 3).map((comment, index, comments) => (
+                  <React.Fragment key={`comment-${index}`}>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <ListItemText primary={comment} />
+                      </ListItemButton>
+                    </ListItem>
 
-                  {index < 2 && index !== comments.length - 1 && <Divider component="li" />}
-                </React.Fragment>
-              ))}
-            </List>
+                    {index < 2 && index !== comments.length - 1 && <Divider component="li" />}
+                  </React.Fragment>
+                ))}
+              </List> :
+              <Typography variant="body1" sx={{ p: 2, pt: 1 }}>
+                Select a post to see what people are talking about
+              </Typography>
+            }
           </Paper>
         </Grid>
 
@@ -155,8 +168,8 @@ const News = ({ params }) => {
         {/* Trending section (right column) */}
         <Grid item xs={12} md={3}>
           <Paper elevation={3} sx={{ overflow: 'auto' }}>
-            <Typography variant="h6" component="div" sx={{ p: 2, pb: 0 }}>
-              Related Trending Topics on Twitter
+            <Typography variant="h5" component="div" sx={{ p: 2, pb: 0 }}>
+              Related Trending Topics
             </Typography>
             <List>
               {trendingTopics.map((topic, index) => (
