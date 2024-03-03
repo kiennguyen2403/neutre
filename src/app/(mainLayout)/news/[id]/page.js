@@ -1,6 +1,22 @@
 "use client";
 import React from 'react';
-import { Stack, Container, Grid, Paper, Typography, List, ListItem, ListItemText, Divider, Button, Skeleton, useTheme } from '@mui/material';
+import {
+  Stack,
+  Container,
+  Grid, Paper,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Divider,
+  Button,
+  Skeleton,
+  useTheme,
+  ListItemAvatar,
+  Avatar,
+  Box
+} from '@mui/material';
 import Link from 'next/link';
 import AppRouter from 'next/dist/client/components/app-router';
 import { useQuery } from "convex/react";
@@ -45,7 +61,7 @@ const News = ({ params }) => {
   const theme = useTheme();
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 , margin: '90px'}}>
+    <Container maxWidth="lg" sx={{ mt: 4, margin: '90px' }}>
       <Grid container spacing={3}>
         {/* Comments section (left column) */}
         <Grid item xs={12} md={3}>
@@ -56,18 +72,21 @@ const News = ({ params }) => {
             <List>
               {news?.sources?.[selectedPost]?.comment?.slice(0, 3).map((comment, index, comments) => (
                 <React.Fragment key={`comment-${index}`}>
-                  <ListItem>
-                    <ListItemText primary={comment} />
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemText primary={comment} />
+                    </ListItemButton>
                   </ListItem>
-                  {index < 2 && index !== comments.length - 1 && <Divider component="li" />}  
+
+                  {index < 2 && index !== comments.length - 1 && <Divider component="li" />}
                 </React.Fragment>
               ))}
             </List>
           </Paper>
         </Grid>
 
-       {/* News content section (middle column) */}
-       <Grid item xs={12} md={6}>
+        {/* News content section (middle column) */}
+        <Grid item xs={12} md={6}>
           {news ? news.sources?.map((newsContent, index) => (
             <Paper
               key={`post-${index}`}
@@ -87,25 +106,47 @@ const News = ({ params }) => {
                 setSelectedPost(index)
               }}
             >
-              <Typography variant="h4" component="h1" gutterBottom>
+              <Typography variant="h5" component="div" gutterBottom>
                 {newsContent.title}
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Divider sx={{
+                margin: '1rem'
+              }} />
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                alignItems: 'start',
+                marginBottom: '1rem'
+              }}>
+                <Avatar
+                  src={"https://picsum.photos/200?random=" + index}
+                />
+                <Typography variant="subtitle2" gutterBottom sx={{
+                  marginTop: '0.5rem',
+                  fontSize: '0.8rem',
+                  color: 'text.secondary',
+                  marginBottom: '0.5rem'
+                }}>
+                  {Date('2022-01-01').toString()}
+                </Typography>
+              </Box>
+              <Typography variant="subtitle1" gutterBottom>
                 {newsContent.description}
               </Typography>
               <div style={{ marginTop: '16px' }}>
-                  <Button href={newsContent.url} component="a" variant="contained" color="primary" target="_blank" rel="noopener noreferrer">
-                    Read Full Article
-                  </Button>
+                <Button href={newsContent.url} component="a" variant="contained" color="primary" target="_blank" rel="noopener noreferrer">
+                  Read Full Article
+                </Button>
               </div>
             </Paper>
           )) :
             <Stack gap={2}>
-            {
-              Array.from({ length: 3 }).map((index) => (
-                <Skeleton key={index} variant="rounded" height={400} />
-              ))
-            }
+              {
+                Array.from({ length: 3 }).map((index) => (
+                  <Skeleton key={index} variant="rounded" height={400} />
+                ))
+              }
             </Stack>
           }
         </Grid>
@@ -120,11 +161,13 @@ const News = ({ params }) => {
             <List>
               {trendingTopics.map((topic, index) => (
                 <React.Fragment key={index}>
-                  <ListItem>
-                    <ListItemText 
-                      primary={topic.name} 
-                      secondary={`Retweets: ${topic.retweets}, Likes: ${topic.likes}, Replies: ${topic.replies}`} 
-                    />
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemText
+                        primary={topic.name}
+                        secondary={`Retweets: ${topic.retweets}, Likes: ${topic.likes}, Replies: ${topic.replies}`}
+                      />
+                    </ListItemButton>
                   </ListItem>
                   {index < trendingTopics.length - 1 && <Divider />}
                 </React.Fragment>
@@ -136,7 +179,7 @@ const News = ({ params }) => {
 
 
       </Grid>
-    </Container>
+    </Container >
   );
 };
 

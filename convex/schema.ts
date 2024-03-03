@@ -7,10 +7,9 @@ export default defineSchema({
         contents: v.array(v.string()),
         sources: v.array(
             v.object({
-                authors: v.string(),
-                comment: v.string(),
-                url: v.string(),
-                contentIndex: v.number(),
+                title: v.string(),
+                comment: v.array(v.string()),
+                description: v.string(),
             })
         ),
         image: v.string(),

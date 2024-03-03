@@ -9,7 +9,7 @@ export const get = query({
         try {
             return await ctx.db
                 .query("news")
-                .filter((q) => q.eq(q.field('preference'), preference))
+                .filter((q) => q.eq(q.field('preference'), preference.toLowerCase()))
                 .order("asc")
                 .collect();
         } catch (e) {
@@ -41,10 +41,9 @@ export const insert = internalMutation({
         authors: v.array(v.string()),
         sources: v.array(
             v.object({
-                contentIndex: v.number(),
-                authors: v.string(),
-                comment: v.string(),
-                url: v.string(),
+                title: v.string(),
+                comment: v.array(v.string()),
+                description: v.string(),
             })
         ),
         image: v.string(),
