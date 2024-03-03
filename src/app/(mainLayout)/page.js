@@ -126,14 +126,22 @@ export default function Home() {
     }
   }
 
-  if (!isLoaded || !isSignedIn) return null;
+  if (!isLoaded || !isSignedIn || !user?.publicMetadata) return null;
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "4rem", paddingBlock: "2rem", minHeight: "100vh" }}>
-      {!user?.publicMetadata?.preferences ? <PreferenceChooser topics={topics} onSave={savePreferences} /> :
+      {!preferences && !user?.publicMetadata?.preferences ? <PreferenceChooser topics={topics} onSave={savePreferences} /> :
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" color="text.primary" pb="0.5rem">
+              Topic Feed
+            </Typography>
+          </Grid>
           <Grid item xs={3} position="sticky" top="2rem">
             <Card>
+              <Typography variant="h5" color="text.primary" padding="1rem" pb="0">
+                Categories
+              </Typography>
               <Stack direction="row" gap={1} flexWrap="wrap" padding="1rem">
                 {selectedTopics.map((topic) => (
                   <Chip

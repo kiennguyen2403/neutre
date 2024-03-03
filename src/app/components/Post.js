@@ -9,7 +9,8 @@ const Post = ({ imageUrl, title, _creationTime: date, contents }) => {
 
   return (
     <VizSensor onChange={(isVisible) => {
-      setIsVisible(isVisible);
+      if (isVisible)
+        setIsVisible(isVisible);
     }}>
       <Fade in={isVisible} timeout={1000}>
         <Card sx={{
