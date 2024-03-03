@@ -162,8 +162,8 @@ export default function Home() {
                     label={topic}
                     variant={"outlined"}
                     onClick={() => {
-                      setSelectedTopics((prev) => [...prev, topic].toSorted());
-                      postSelectedTopics([...selectedTopics, topic].toSorted());
+                      setSelectedTopics((prev) => [topic].toSorted());
+                      postSelectedTopics([topic].toSorted());
                     }}
                     color="primary"
                   />

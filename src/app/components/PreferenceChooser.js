@@ -30,7 +30,7 @@ const PreferenceChooser = ({ topics, onSave }) => {
                 setSelectedTopics((prev) => prev.filter((t) => t !== title));
                 return;
               }
-              setSelectedTopics((prev) => [...prev, title].toSorted());
+              setSelectedTopics((prev) => [title].toSorted());
             }}
           >
             {selectedTopics.includes(title) && (
