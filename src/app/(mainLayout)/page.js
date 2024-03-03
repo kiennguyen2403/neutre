@@ -10,6 +10,7 @@ import {
   Icon,
   Skeleton,
   CircularProgress,
+  Fade
 } from "@mui/material";
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import Post from "../components/Post";
